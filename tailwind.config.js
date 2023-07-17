@@ -12,21 +12,39 @@ module.exports = {
         'vertical-gradient': 'linear-gradient(90deg, #7FD1CC, #9694F5)',
       },
       colors: {
-        'green-100': '#50B2C0',
-        'green-200': '#255D6A',
-        'green-300': '#0A313C',
+        green: {
+          100: '#50B2C0',
+          200: '#255D6A',
+          300: '#0A313C',
+        },
 
-        'purple-100': '#8381D9',
-        'purple-200': '#2A2879',
+        purple: {
+          100: '#8381D9',
+          200: '#2A2879',
+        },
 
-        'gray-100': '#F8F9FC',
-        'gray-200': '#E6E8F2',
-        'gray-300': '#D1D6E4',
-        'gray-400': '#8D95AF',
-        'gray-500': '#303F73',
-        'gray-600': '#252D4A',
-        'gray-700': '#181C2A',
-        'gray-800': '#0E1116',
+        gray: {
+          100: '#F8F9FC',
+          200: '#E6E8F2',
+          300: '#D1D6E4',
+          400: '#8D95AF',
+          500: '#303F73',
+          600: '#252D4A',
+          700: '#181C2A',
+          800: '#0E1116',
+        },
+      },
+      fontSize: {
+        'title-lg': [24, 1.4],
+        'title-md': [20, 1.4],
+        'title-sm': [18, 1.4],
+        'title-xs': [16, 1.4],
+
+        lg: 20,
+        md: 16,
+        sm: 14,
+
+        'button-link-lg': 18,
       },
     },
   },
