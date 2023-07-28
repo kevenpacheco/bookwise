@@ -6,7 +6,7 @@ import rocketIcon from '@/assets/rocket.svg'
 
 export default function SignIn() {
   return (
-    <div className="p-5 h-[100vh] grid grid-cols-1 justify-items-center items-center md:grid-cols-[4fr_6fr]">
+    <div className="h-[calc(100vh-1.25rem*2)] grid grid-cols-1 justify-items-center items-center md:grid-cols-[4fr_6fr]">
       <div
         className="w-full h-full rounded-[10px] bg-center bg-no-repeat bg-cover hidden md:block"
         style={{

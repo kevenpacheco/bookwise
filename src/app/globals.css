@@ -8,16 +8,44 @@
   box-sizing: border-box;
 }
 
+:focus {
+  outline: none;
+}
+
 button {
   cursor: pointer;
 }
 
 body {
   min-height: 100vh;
+  padding: 1.25rem;
   background-color: theme('colors.gray.800');
   color: theme('colors.gray.300');
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: theme('colors.gray.700');
+  border-radius: 999px;
+  padding-right: 8px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.600');
+  border-radius: 999px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.500');
 }

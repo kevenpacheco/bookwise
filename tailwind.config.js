@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'horizontal-gradient': 'linear-gradient(#7FD1CC, #9694F5)',
-        'vertical-gradient': 'linear-gradient(90deg, #7FD1CC, #9694F5)',
+        'horizontal-gradient': 'linear-gradient(90deg, #7FD1CC, #9694F5)',
+        'vertical-gradient': 'linear-gradient(#7FD1CC, #9694F5)',
       },
       colors: {
         green: {
