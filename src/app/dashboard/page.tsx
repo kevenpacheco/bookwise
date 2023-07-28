@@ -3,9 +3,11 @@ import { BookCard } from '@/components/BookCard'
 import { PageTitle } from '@/components/PageTitle'
 import { BookCardSmall } from '@/components/BookCardSmall'
 import { LinkNavigation } from '@/components/Link'
+import { getServerSession } from 'next-auth'
 
-export default function Home() {
-  const isLoggedIn = true
+export default async function Dashboard() {
+  const session = await getServerSession()
+  const isLoggedIn = !!session?.user
 
   return (
     <>

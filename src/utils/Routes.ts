@@ -2,17 +2,17 @@ import { Binoculars, ChartLineUp, User } from '@/components/Icons'
 
 export const routes = [
   {
-    pathname: '/',
+    pathname: '/dashboard',
     text: 'Início',
     icon: ChartLineUp,
   },
   {
-    pathname: '/explore',
+    pathname: '/dashboard/explore',
     text: 'Explorar',
     icon: Binoculars,
   },
   {
-    pathname: '/profile',
+    pathname: '/dashboard/profile',
     text: 'Perfil',
     icon: User,
   },

@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { NextAuthProvider } from '@/lib/next-auth'
 import './globals.css'
 import '@smastrom/react-rating/style.css'
 
@@ -18,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={nunitoSans.className}>{children}</body>
+      <body className={nunitoSans.className}>
+        <NextAuthProvider>{children}</NextAuthProvider>
+      </body>
     </html>
   )
 }

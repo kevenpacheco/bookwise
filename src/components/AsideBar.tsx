@@ -2,15 +2,19 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Avatar } from '@/components/Avatar'
 import { SignIn, SignOut } from '@/components/Icons'
 import { routes } from '@/utils/Routes'
 import logoImg from '@/assets/logo.svg'
+import { useSession } from 'next-auth/react'
 
 export function AsideBar() {
+  const router = useRouter()
   const currentPathname = usePathname()
-  const isLoggedIn = true
+  const { data: session } = useSession()
+
+  const isLoggedIn = !!session?.user
 
   return (
     <aside
@@ -22,7 +26,7 @@ export function AsideBar() {
       <nav className="flex-1 mt-16">
         <ul className="flex flex-col gap-4">
           {routes.map(({ icon: Icon, pathname, text }) => {
-            if (pathname === '/perfil' && !isLoggedIn) return <></>
+            if (pathname === '/dashboard/profile' && !isLoggedIn) return null
 
             return (
               <li key={pathname} className="text-gray-400 py-2">
@@ -39,22 +43,23 @@ export function AsideBar() {
         </ul>
       </nav>
 
-      <button
-        type="button"
-        className="flex items-center gap-3 text-gray-200 font-bold"
-      >
-        {isLoggedIn ? (
-          <>
-            <Avatar size="sm" />{' '}
-            <span className="font-normal text-sm">Username</span>{' '}
-            <SignOut size={20} className="fill-[#f75A68]" />
-          </>
-        ) : (
-          <>
-            Fazer Login <SignIn size={20} className="fill-green-100" />
-          </>
-        )}
-      </button>
+      {isLoggedIn ? (
+        <button
+          type="button"
+          className="flex items-center gap-3 text-gray-200 font-bold"
+        >
+          <Avatar size="sm" />{' '}
+          <span className="font-normal text-sm">Username</span>{' '}
+          <SignOut size={20} className="fill-[#f75A68]" />
+        </button>
+      ) : (
+        <Link
+          href="/"
+          className="flex items-center gap-3 text-gray-200 font-bold"
+        >
+          Fazer Login <SignIn size={20} className="fill-green-100" />
+        </Link>
+      )}
     </aside>
   )
 }
