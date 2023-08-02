@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Avatar } from '@/components/Avatar'
 import { SignIn, SignOut } from '@/components/Icons'
 import { routes } from '@/utils/Routes'
@@ -10,7 +10,6 @@ import logoImg from '@/assets/logo.svg'
 import { useSession } from 'next-auth/react'
 
 export function AsideBar() {
-  const router = useRouter()
   const currentPathname = usePathname()
   const { data: session } = useSession()
 
@@ -33,6 +32,7 @@ export function AsideBar() {
                 <Link
                   href={pathname}
                   data-active={currentPathname === pathname}
+                  prefetch
                   className="flex items-center gap-3 font-bold hover:text-gray-300 before:content-[''] before:h-6 before:w-1 before:rounded-full data-[active=true]:text-gray-100 data-[active=true]:before:bg-vertical-gradient"
                 >
                   <Icon size={24} /> {text}
@@ -55,6 +55,7 @@ export function AsideBar() {
       ) : (
         <Link
           href="/"
+          prefetch
           className="flex items-center gap-3 text-gray-200 font-bold"
         >
           Fazer Login <SignIn size={20} className="fill-green-100" />

@@ -1,19 +1,21 @@
-import Image from 'next/image'
-import bookImg from '@/assets/book.png'
+import Image, { ImageProps } from 'next/image'
 import { twMerge } from 'tailwind-merge'
 
-interface BookImage {
+interface BookImage extends Omit<ImageProps, 'width'> {
   className?: string
 }
 
-export function BookImage({ className }: BookImage) {
+export function BookImage({ className, src, alt, ...props }: BookImage) {
   return (
     <div className={twMerge('w-full', className)}>
       <div className="relative pt-[calc(152/108*100%)] rounded overflow-hidden">
         <Image
-          src={bookImg}
-          alt="livro"
+          src={src}
+          alt={alt}
+          width={108}
+          height={152}
           className="absolute inset-0 w-full h-full"
+          {...props}
         />
       </div>
     </div>

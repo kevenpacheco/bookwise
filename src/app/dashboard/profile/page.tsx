@@ -3,8 +3,16 @@ import { Input } from '@/components/Input'
 import { PageTitle } from '@/components/PageTitle'
 import { RatingStars } from '@/components/RatingStars'
 import { BookOpen, BookmarkSimple, Books, UserList } from '@/components/Icons'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
 
-export default function Profile() {
+export default async function Profile() {
+  const session = await getServerSession({})
+
+  if (!session) {
+    redirect('/dashboard')
+  }
+
   return (
     <>
       <PageTitle />

@@ -2,10 +2,15 @@ import { ButtonHTMLAttributes } from 'react'
 import { BookImage } from './BookImage'
 import { RatingStars } from './RatingStars'
 import { twMerge } from 'tailwind-merge'
+import { Book } from '@/@types/Book'
 
-type BookCardProps = ButtonHTMLAttributes<HTMLButtonElement>
+interface BookCardProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  data: Book
+}
 
-export function BookCardSmall({ className, ...props }: BookCardProps) {
+export function BookCardSmall({ className, data, ...props }: BookCardProps) {
+  const { author, coverUrl, name, averageRating } = data
+
   return (
     <button
       type="button"
@@ -15,15 +20,15 @@ export function BookCardSmall({ className, ...props }: BookCardProps) {
       )}
       {...props}
     >
-      <BookImage />
+      <BookImage src={coverUrl} alt={name} />
 
-      <div className="h-full flex flex-col justify-between">
+      <div className="h-full flex flex-col justify-between overflow-hidden">
         <div className="flex flex-col">
-          <h2 className="text-gray-100 text-title-xs">O Hobbit</h2>
-          <span className="text-gray-400 text-sm">J.R.R. Tolkien</span>
+          <h2 className="text-gray-100 text-title-xs line-clamp-2">{name}</h2>
+          <span className="text-gray-400 text-sm">{author}</span>
         </div>
 
-        <RatingStars score={1} />
+        <RatingStars score={averageRating} />
       </div>
     </button>
   )

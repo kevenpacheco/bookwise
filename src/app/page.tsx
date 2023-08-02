@@ -1,5 +1,7 @@
 'use client'
 
+import '@/lib/dayjs'
+
 import { LoginButton } from '@/components/LoginButton'
 import { useRouter } from 'next/navigation'
 

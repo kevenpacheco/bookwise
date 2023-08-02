@@ -1,13 +1,47 @@
+'use client'
+
+import { Book } from '@/@types/Book'
+import { Comment } from '@/@types/Comment'
+import { BookImage } from '@/components/BookImage'
 import { CommentCard } from '@/components/CommentCard'
 import { CommentForm } from '@/components/CommentForm'
 import { RatingStars } from '@/components/RatingStars'
+import { api } from '@/lib/axios'
 import { BookOpen, BookmarkSimple, X } from '@phosphor-icons/react'
+import { useEffect, useState } from 'react'
 
 interface BookInfoModal {
+  book: Book
+  isRating: boolean
   onClose: () => void
+  onRating: () => void
 }
 
-export function BookInfoModal({ onClose }: BookInfoModal) {
+export function BookInfoModal({
+  book,
+  isRating,
+  onClose,
+  onRating,
+}: BookInfoModal) {
+  const [comments, setComments] = useState<Comment[]>([])
+
+  function handleRating() {
+    onRating()
+  }
+
+  function generateRatingCountText(count: number) {
+    if (count > 1) {
+      return `${count} avaliações`
+    }
+    return `${count} avaliação`
+  }
+
+  useEffect(() => {
+    api.get(`/books/${book.id}/reviews`).then((response) => {
+      setComments(response.data)
+    })
+  }, [book.id])
+
   return (
     <div className="fixed inset-0 p-2 flex justify-end bg-black/60">
       <div className="book-info w-full max-w-[660px] px-[34px] pt-4 pb-16 bg-gray-800 shadow-[-4px_0_30px_0_rgba(0,0,0,0.50)] overflow-y-auto">
@@ -21,21 +55,23 @@ export function BookInfoModal({ onClose }: BookInfoModal) {
 
         <div className="flex flex-col gap-10 px-8 pt-6 pb-4 mt-4 rounded-[10px] bg-gray-700">
           <div className="flex gap-8">
-            <div className="aspect-[32/47] w-full max-w-[172px] rounded bg-red-500">
-              Livro
-            </div>
+            <BookImage
+              src={book.coverUrl}
+              alt={book.name}
+              className="w-full max-w-[172px]"
+            />
 
             <div className="flex-1 flex flex-col justify-between">
               <h2 className="text-gray-100 text-title-xs">
-                O Hobbit <br />
-                <span className="text-gray-400 text-md">J.R.R. Tolkien</span>
+                {book.name} <br />
+                <span className="text-gray-400 text-md">{book.author}</span>
               </h2>
 
               <div>
-                <RatingStars score={3.8} />
+                <RatingStars score={book.averageRating} />
 
                 <span className="text-gray-400 text-sm mt-1 block">
-                  3 avaliações
+                  {generateRatingCountText(book.ratingCount)}
                 </span>
               </div>
             </div>
@@ -47,8 +83,8 @@ export function BookInfoModal({ onClose }: BookInfoModal) {
               <span className="text-gray-300 text-sm">
                 Categoria
                 <br />
-                <span className="text-gray-200 text-title-xs font-bold">
-                  Computação, educação
+                <span className="block text-gray-200 text-title-xs font-bold lowercase first-letter:capitalize">
+                  {book.categories.join(', ')}
                 </span>
               </span>
             </div>
@@ -59,7 +95,7 @@ export function BookInfoModal({ onClose }: BookInfoModal) {
                 Páginas
                 <br />
                 <span className="text-gray-200 text-title-xs font-bold">
-                  160
+                  {book.totalPages}
                 </span>
               </span>
             </div>
@@ -71,6 +107,7 @@ export function BookInfoModal({ onClose }: BookInfoModal) {
             <span className="text-gray-200 text-sm">Avaliações</span>
             <button
               type="button"
+              onClick={handleRating}
               className="text-purple-100 flex items-center px-1 py-2 gap-3"
             >
               Avaliar
@@ -78,13 +115,11 @@ export function BookInfoModal({ onClose }: BookInfoModal) {
           </header>
 
           <div className="flex flex-col gap-3">
-            <CommentForm />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
+            {isRating && <CommentForm />}
+
+            {comments.map((comment) => {
+              return <CommentCard key={comment.id} data={comment} />
+            })}
           </div>
         </div>
       </div>

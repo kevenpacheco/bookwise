@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image, { ImageProps } from 'next/image'
 import { tv, VariantProps } from 'tailwind-variants'
 
 const avatarSizeMap = {
@@ -21,23 +21,46 @@ const avatarVariants = tv({
   },
 })
 
-type AvatarProp = VariantProps<typeof avatarVariants>
+interface AvatarProp
+  extends VariantProps<typeof avatarVariants>,
+    Omit<ImageProps, 'src'> {
+  src?: string | null
+}
 
-export function Avatar({ size = 'md' }: AvatarProp) {
+export function Avatar({ size = 'md', alt, src, ...props }: AvatarProp) {
   const sizeInPixels = avatarSizeMap[size]
+
+  const fallbackText = alt
+    .split(' ')
+    .map((word) => word[0].toUpperCase())
+    .join('')
+    .substring(0, 2)
+
+  const randomBackgroundFallbackColor = `rgba(${Math.floor(
+    Math.random() * 255,
+  )}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
 
   return (
     <div className={avatarVariants({ size })}>
-      <Image
-        src="/login.png"
-        width={sizeInPixels}
-        height={sizeInPixels}
-        alt="username"
-        className="w-full h-full rounded-full"
-        style={{
-          objectFit: 'cover',
-        }}
-      />
+      {src ? (
+        <Image
+          src={src}
+          alt={alt}
+          width={sizeInPixels}
+          height={sizeInPixels}
+          className="w-full h-full rounded-full"
+          style={{
+            objectFit: 'cover',
+          }}
+          {...props}
+        />
+      ) : (
+        <div
+          className={`bg-[${randomBackgroundFallbackColor}] h-full w-full text-center grid place-items-center`}
+        >
+          {fallbackText}
+        </div>
+      )}
     </div>
   )
 }
