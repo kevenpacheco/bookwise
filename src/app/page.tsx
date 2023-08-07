@@ -3,14 +3,23 @@
 import '@/lib/dayjs'
 
 import { LoginButton } from '@/components/LoginButton'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
+import { useSession, signIn } from 'next-auth/react'
+import { useEffect } from 'react'
 
 export default function SignIn() {
   const router = useRouter()
+  const { data: session } = useSession()
 
   function handleGoToDashboard() {
     router.push('/dashboard')
   }
+
+  useEffect(() => {
+    if (session) {
+      redirect('/dashboard')
+    }
+  }, [session])
 
   return (
     <div className="h-[calc(100vh-1.25rem*2)] grid grid-cols-1 justify-items-center items-center md:grid-cols-[4fr_6fr]">
@@ -26,8 +35,12 @@ export default function SignIn() {
         <span>Faça seu login ou acesse como visitante.</span>
 
         <div className="mt-10 flex flex-col gap-4">
-          <LoginButton icon="google">Entrar com Google</LoginButton>
-          <LoginButton icon="github">Entrar com GitHub</LoginButton>
+          <LoginButton icon="google" onClick={() => signIn('google')}>
+            Entrar com Google
+          </LoginButton>
+          <LoginButton icon="github" onClick={() => signIn('github')}>
+            Entrar com GitHub
+          </LoginButton>
           <LoginButton icon="rocket" onClick={handleGoToDashboard}>
             Acessar como visitante
           </LoginButton>
