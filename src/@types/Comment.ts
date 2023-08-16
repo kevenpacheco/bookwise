@@ -1,10 +1,9 @@
+import { User } from './User'
+
 export interface Comment {
   id: string
-  rate: 4
+  rate: number
   description: string
   createdAt: Date
-  user: {
-    name: string
-    avatarUrl: string
-  }
+  user: User
 }

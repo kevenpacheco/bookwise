@@ -25,6 +25,7 @@ export async function GET() {
       author: book.author,
       coverUrl: book.cover_url,
       totalPages: book.total_pages,
+      summary: book.summary,
       categories,
       ratingCount,
       averageRating,

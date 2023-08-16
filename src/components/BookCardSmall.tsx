@@ -28,7 +28,7 @@ export function BookCardSmall({ className, data, ...props }: BookCardProps) {
           <span className="text-gray-400 text-sm">{author}</span>
         </div>
 
-        <RatingStars score={averageRating} />
+        <RatingStars value={averageRating} />
       </div>
     </button>
   )

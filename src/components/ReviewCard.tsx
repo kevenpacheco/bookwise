@@ -38,7 +38,7 @@ export function ReviewCard({ data }: ReviewCardProps) {
           <span className="text-gray-400 text-sm">{time}</span>
         </p>
 
-        <RatingStars score={rate} />
+        <RatingStars value={rate} />
       </header>
 
       <div className="flex gap-5">

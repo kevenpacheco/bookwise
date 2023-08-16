@@ -3,15 +3,48 @@ import { Input } from '@/components/Input'
 import { PageTitle } from '@/components/PageTitle'
 import { RatingStars } from '@/components/RatingStars'
 import { BookOpen, BookmarkSimple, Books, UserList } from '@/components/Icons'
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { api } from '@/lib/axios'
+import { Review } from '@/@types/Review'
+import { BookImage } from '@/components/BookImage'
+import { User } from '@/@types/User'
 
-export default async function Profile() {
-  const session = await getServerSession({})
+dayjs.extend(relativeTime)
 
-  if (!session) {
-    redirect('/dashboard')
+interface ProfileData extends User {
+  pagesReadCount: number
+  authorsReadCount: number
+  mostReadCategory: string
+  ratings: Omit<Review, 'user'>[]
+}
+
+interface ProfilePage {
+  params: {
+    userId: string
   }
+}
+
+export default async function Profile({ params }: ProfilePage) {
+  const { userId } = params
+
+  if (!userId) {
+    return {
+      redirect: '/dashboard',
+    }
+  }
+
+  const { data: currentProfile } = await api.get<ProfileData>(
+    `/users/${userId}`,
+  )
+
+  if (!currentProfile) {
+    return {
+      redirect: '/dashboard',
+    }
+  }
+
+  const memberAt = dayjs(currentProfile.createdAt).get('y')
 
   return (
     <>
@@ -22,39 +55,32 @@ export default async function Profile() {
           <Input placeholder="Buscar livro avaliado" />
 
           <div className="flex flex-col gap-6">
-            {Array.from({ length: 7 }).map((_, index) => {
-              return (
-                <div key={index} className="flex flex-col gap-2">
-                  <span className="text-sm">Há 2 dias</span>
-                  <div className="p-6 flex flex-col items-start gap-6 rounded-lg bg-gray-700">
-                    <div className="flex gap-6">
-                      <div className="w-[98px] h-[134px] rounded bg-red-500">
-                        Livro
-                      </div>
+            {currentProfile.ratings.map((rating) => {
+              const howLong = dayjs(rating.createdAt).fromNow()
 
-                      <div className="flex flex-col justify-between items-center flex-1 px-1">
+              return (
+                <div key={rating.id} className="flex flex-col gap-2">
+                  <span className="text-sm">{howLong}</span>
+                  <div className="p-6 flex flex-col gap-6 rounded-lg bg-gray-700">
+                    <div className="grid grid-cols-[98px_1fr] gap-6">
+                      <BookImage
+                        alt={rating.book.name}
+                        src={rating.book.coverUrl}
+                      />
+
+                      <div className="flex flex-col justify-between px-1">
                         <h2 className="text-gray-100 text-title-sm">
-                          O Hobbit <br />
+                          {rating.book.name} <br />
                           <span className="text-gray-400 text-sm">
-                            J.R.R. Tolkien
+                            {rating.book.author}
                           </span>
                         </h2>
 
-                        <RatingStars score={6} />
+                        <RatingStars value={rating.rate} />
                       </div>
                     </div>
 
-                    <p className="text-sm">
-                      Tristique massa sed enim lacinia odio. Congue ut faucibus
-                      nunc vitae non. Nam feugiat vel morbi viverra vitae mi.
-                      Vitae fringilla ut et suspendisse enim suspendisse vitae.
-                      Leo non eget lacus sollicitudin tristique pretium quam.
-                      Mollis et luctus amet sed convallis varius massa sagittis.
-                      Proin sed proin at leo quis ac sem. Nam donec accumsan
-                      curabitur amet tortor quam sit. Bibendum enim sit dui
-                      lorem urna amet elit rhoncus ut. Aliquet euismod vitae ut
-                      turpis. Aliquam amet integer pellentesque.
-                    </p>
+                    <p className="text-sm">{rating.description}</p>
                   </div>
                 </div>
               )
@@ -63,14 +89,18 @@ export default async function Profile() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-8 rounded-[10px]">
-          <Avatar size="lg" />
+          <Avatar
+            size="lg"
+            alt={currentProfile.name}
+            src={currentProfile.avatarUrl}
+          />
 
           <div className="flex flex-col items-center">
             <h1 className="mt-5 text-gray-100 text-center text-title-md">
-              Cristofer Rosser
+              {currentProfile.name}
             </h1>
             <span className="text-gray-400 text-sm text-center">
-              membro desde 2019
+              {`membro desde ${memberAt}`}
             </span>
           </div>
 
@@ -81,7 +111,9 @@ export default async function Profile() {
               <BookOpen size={32} className="fill-green-100" />
 
               <div className="flex flex-col flex-1">
-                <span className="text-gray-200 text-title-xs">3855</span>
+                <span className="text-gray-200 text-title-xs">
+                  {currentProfile.pagesReadCount}
+                </span>
                 <span className="text-gray-300 text-sm">Páginas lidas</span>
               </div>
             </div>
@@ -90,7 +122,9 @@ export default async function Profile() {
               <Books size={32} className="fill-green-100" />
 
               <div className="flex flex-col flex-1">
-                <span className="text-gray-200 text-title-xs">10</span>
+                <span className="text-gray-200 text-title-xs">
+                  {currentProfile.ratings.length}
+                </span>
                 <span className="text-gray-300 text-sm">Livros avaliados</span>
               </div>
             </div>
@@ -99,7 +133,9 @@ export default async function Profile() {
               <UserList size={32} className="fill-green-100" />
 
               <div className="flex flex-col flex-1">
-                <span className="text-gray-200 text-title-xs">8</span>
+                <span className="text-gray-200 text-title-xs">
+                  {currentProfile.authorsReadCount}
+                </span>
                 <span className="text-gray-300 text-sm">Atores lidos</span>
               </div>
             </div>

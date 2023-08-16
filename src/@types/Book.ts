@@ -4,7 +4,8 @@ export interface Book {
   author: string
   coverUrl: string
   totalPages: number
-  categories: Array<string>
+  summary: string
+  categories: string[]
   ratingCount: number
   averageRating: number
 }

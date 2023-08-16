@@ -8,19 +8,13 @@ import { BookInfoModal } from './components/BookInfoModal'
 import { BookCardSmall } from '@/components/BookCardSmall'
 import { Book } from '@/@types/Book'
 import { api } from '@/lib/axios'
-import { useSession } from 'next-auth/react'
-import { LoginModal } from '@/components/LoginModal'
 import { categories } from '@/utils/categories'
 
 export default function Explore() {
   const [books, setBooks] = useState<Book[]>([])
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
-  const [isRating, setIsRating] = useState(false)
-  const [showLoginModal, setShowLoginModal] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-
-  const { data: session } = useSession()
 
   function handleSelectBook(book: Book) {
     return () => {
@@ -30,18 +24,6 @@ export default function Explore() {
 
   function handleClearSelectedBook() {
     setSelectedBook(null)
-  }
-
-  function handleRating() {
-    if (!session) {
-      setShowLoginModal(true)
-      return
-    }
-    setIsRating(true)
-  }
-
-  function handleCloseLoginModal() {
-    setShowLoginModal(false)
   }
 
   function handleSearchBook(e: ChangeEvent<HTMLInputElement>) {
@@ -121,15 +103,8 @@ export default function Explore() {
       </div>
 
       {!!selectedBook && (
-        <BookInfoModal
-          book={selectedBook}
-          onClose={handleClearSelectedBook}
-          isRating={isRating}
-          onRating={handleRating}
-        />
+        <BookInfoModal book={selectedBook} onClose={handleClearSelectedBook} />
       )}
-
-      {showLoginModal && <LoginModal onClose={handleCloseLoginModal} />}
     </>
   )
 }

@@ -1,5 +1,4 @@
 import { ReviewCard } from '@/components/ReviewCard'
-import { BookCard } from '@/components/BookCard'
 import { PageTitle } from '@/components/PageTitle'
 import { BookCardSmall } from '@/components/BookCardSmall'
 import { LinkNavigation } from '@/components/Link'
@@ -7,9 +6,11 @@ import { getServerSession } from 'next-auth'
 import { api } from '@/lib/axios'
 import { Book } from '@/@types/Book'
 import { Review } from '@/@types/Review'
+import { BookCard } from '@/components/BookCard'
+import { authOptions } from '../api/auth/[...nextauth]/route'
 
 export default async function Dashboard() {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
   const isLoggedIn = !!session?.user
 
   const ratedBooks: Review[] = await api
@@ -20,13 +21,17 @@ export default async function Dashboard() {
     .get('/books/popular')
     .then((resp) => resp.data)
 
+  const lastUserReview = ratedBooks.find(({ user }) => {
+    return user.id === session?.user.id
+  })
+
   return (
     <>
       <PageTitle />
 
       <div className="flex gap-16">
         <div className="flex-1">
-          {isLoggedIn && (
+          {isLoggedIn && lastUserReview && (
             <section className="mb-10">
               <div className="text-gray-100 text-sm flex items-center justify-between">
                 Sua última leitura{' '}
@@ -36,7 +41,7 @@ export default async function Dashboard() {
               </div>
 
               <div className="mt-4 flex flex-col gap-3">
-                <BookCard />
+                <BookCard data={lastUserReview.book} />
               </div>
             </section>
           )}
