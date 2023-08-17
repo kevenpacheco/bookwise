@@ -9,17 +9,23 @@ interface BookCardProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function BookCardSmall({ className, data, ...props }: BookCardProps) {
-  const { author, coverUrl, name, averageRating } = data
+  const { author, coverUrl, name, averageRating, wasRead } = data
 
   return (
     <button
       type="button"
       className={twMerge(
-        'bg-gray-700 px-5 py-4 grid grid-cols-[108px_1fr] gap-5 rounded-lg border-2 border-solid border-gray-700 text-start hover:border-gray-500',
+        'bg-gray-700 relative overflow-hidden px-5 py-7 grid grid-cols-[108px_1fr] gap-5 rounded-lg border-2 border-solid border-gray-700 text-start hover:border-gray-500',
         className,
       )}
       {...props}
     >
+      {wasRead && (
+        <span className="px-3 py-1 rounded-es bg-green-300 absolute top-0 right-0 uppercase text-green-100 text-xs font-bold">
+          Lido
+        </span>
+      )}
+
       <BookImage src={coverUrl} alt={name} />
 
       <div className="h-full flex flex-col justify-between overflow-hidden">

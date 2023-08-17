@@ -8,4 +8,5 @@ export interface IBook {
   categories: string[]
   ratingCount: number
   averageRating: number
+  wasRead: boolean
 }
