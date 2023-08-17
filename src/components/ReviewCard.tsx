@@ -6,12 +6,13 @@ import { BookImage } from './BookImage'
 import { RatingStars } from './RatingStars'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Review } from '@/@types/Review'
+import { IReview } from '@/@types/Review'
+import Link from 'next/link'
 
 dayjs.extend(relativeTime)
 
 interface ReviewCardProps {
-  data: Review
+  data: IReview
 }
 
 export function ReviewCard({ data }: ReviewCardProps) {
@@ -31,12 +32,14 @@ export function ReviewCard({ data }: ReviewCardProps) {
   return (
     <div className="bg-gray-700 p-6 flex flex-col gap-8 rounded-lg">
       <header className="flex gap-4 items-start">
-        <Avatar alt={user.name} src={user.avatarUrl} />
+        <Link href={`/dashboard/profile/${user.id}`}>
+          <Avatar alt={user.name} src={user.avatarUrl} />
+        </Link>
 
-        <p className="flex-1 text-gray-100">
-          {user.name} <br />
+        <div className="flex-1 flex flex-col text-gray-100">
+          <Link href={`/dashboard/profile/${user.id}`}>{user.name}</Link>
           <span className="text-gray-400 text-sm">{time}</span>
-        </p>
+        </div>
 
         <RatingStars value={rate} />
       </header>

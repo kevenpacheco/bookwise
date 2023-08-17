@@ -5,14 +5,14 @@ import { Avatar } from './Avatar'
 import { RatingStars } from './RatingStars'
 import { useSession } from 'next-auth/react'
 import { FormEvent, useState } from 'react'
-import { Comment } from '@/@types/Comment'
+import { IComment } from '@/@types/Comment'
 
 interface CommentFormProps {
   onCancel: () => void
   onConfirm: ({
     rate,
     description,
-  }: Pick<Comment, 'description' | 'rate'>) => void
+  }: Pick<IComment, 'description' | 'rate'>) => void
 }
 
 export function CommentForm({ onCancel, onConfirm }: CommentFormProps) {

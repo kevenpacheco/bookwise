@@ -1,9 +1,9 @@
-import { User } from './User'
+import { IUser } from './User'
 
-export interface Comment {
+export interface IComment {
   id: string
   rate: number
   description: string
   createdAt: Date
-  user: User
+  user: IUser
 }

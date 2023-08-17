@@ -1,25 +1,30 @@
 import { ReviewCard } from '@/components/ReviewCard'
 import { PageTitle } from '@/components/PageTitle'
-import { BookCardSmall } from '@/components/BookCardSmall'
 import { LinkNavigation } from '@/components/Link'
 import { getServerSession } from 'next-auth'
 import { api } from '@/lib/axios'
-import { Book } from '@/@types/Book'
-import { Review } from '@/@types/Review'
+import { IBook, IReview } from '@/@types'
 import { BookCard } from '@/components/BookCard'
 import { authOptions } from '../api/auth/[...nextauth]/route'
+import { ChartLineUp } from '@/components/Icons'
+import PopularBooks from './components/PopularBooks'
+
+async function getRatedBooks() {
+  const res = await api.get('/ratings')
+  return res.data
+}
+
+async function getPopularBooks() {
+  const res = await api.get('/books/popular')
+  return res.data
+}
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
   const isLoggedIn = !!session?.user
 
-  const ratedBooks: Review[] = await api
-    .get('/ratings')
-    .then((resp) => resp.data)
-
-  const popularBooks: Book[] = await api
-    .get('/books/popular')
-    .then((resp) => resp.data)
+  const ratedBooks: IReview[] = await getRatedBooks()
+  const popularBooks: IBook[] = await getPopularBooks()
 
   const lastUserReview = ratedBooks.find(({ user }) => {
     return user.id === session?.user.id
@@ -27,7 +32,9 @@ export default async function Dashboard() {
 
   return (
     <>
-      <PageTitle />
+      <PageTitle>
+        <ChartLineUp size={32} className="fill-green-100" /> Início
+      </PageTitle>
 
       <div className="flex gap-16">
         <div className="flex-1">
@@ -59,26 +66,7 @@ export default async function Dashboard() {
           </section>
         </div>
 
-        <section className="w-[324px]">
-          <div className="text-gray-100 text-sm flex items-center justify-between">
-            Livros populares
-            <LinkNavigation size="sm" href="/dashboard/explore" prefetch>
-              Ver todos
-            </LinkNavigation>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-3">
-            {popularBooks.map((book) => {
-              return (
-                <BookCardSmall
-                  key={book.id}
-                  data={book}
-                  className="grid-cols-[64px_1fr]"
-                />
-              )
-            })}
-          </div>
-        </section>
+        <PopularBooks books={popularBooks} />
       </div>
     </>
   )

@@ -1,11 +1,11 @@
-import { Book } from './Book'
-import { User } from './User'
+import { IBook } from './Book'
+import { IUser } from './User'
 
-export interface Review {
+export interface IReview {
   id: string
   rate: number
   description: string
   createdAt: Date
-  book: Book
-  user: User
+  book: IBook
+  user: IUser
 }

@@ -2,10 +2,10 @@ import { ButtonHTMLAttributes } from 'react'
 import { RatingStars } from './RatingStars'
 import { BookImage } from './BookImage'
 import { twMerge } from 'tailwind-merge'
-import { Book } from '@/@types/Book'
+import { IBook } from '@/@types/Book'
 
 interface BookCardProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  data: Book
+  data: IBook
 }
 
 export function BookCard({ className, data, ...props }: BookCardProps) {

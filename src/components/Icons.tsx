@@ -2,6 +2,7 @@
 
 export {
   CaretRight,
+  CaretLeft,
   Check,
   List,
   BookOpen,

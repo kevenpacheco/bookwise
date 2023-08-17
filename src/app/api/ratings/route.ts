@@ -25,6 +25,7 @@ export async function GET() {
         coverUrl: review.book.cover_url,
       },
       user: {
+        id: review.user.id,
         name: review.user.name,
         avatarUrl: review.user.avatar_url,
       },

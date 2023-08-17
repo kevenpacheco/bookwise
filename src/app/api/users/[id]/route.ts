@@ -94,7 +94,7 @@ export async function GET(request: Request, { params }: Context) {
       return ''
     }
 
-    return categories.sort((a, b) => a.count - b.count)[0].name
+    return categories.sort((a, b) => b.count - a.count)[0].name
   }
 
   return NextResponse.json({

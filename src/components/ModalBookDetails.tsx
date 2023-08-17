@@ -1,28 +1,25 @@
 'use client'
 
-import { Book } from '@/@types/Book'
-import { Comment } from '@/@types/Comment'
+import { IComment } from '@/@types/Comment'
 import { BookImage } from '@/components/BookImage'
 import { CommentCard } from '@/components/CommentCard'
 import { CommentForm } from '@/components/CommentForm'
 import { LoginModal } from '@/components/LoginModal'
 import { RatingStars } from '@/components/RatingStars'
+import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { api } from '@/lib/axios'
 import { BookOpen, BookmarkSimple, X } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
-interface BookInfoModal {
-  book: Book
-  onClose: () => void
-}
-
-export function BookInfoModal({ book, onClose }: BookInfoModal) {
-  const [comments, setComments] = useState<Comment[]>([])
+export function ModalBookDetails() {
+  const [comments, setComments] = useState<IComment[]>([])
   const [isRating, setRating] = useState(false)
   const [isShowLoginModal, setIsShowLoginModal] = useState(false)
 
   const { data: session } = useSession()
+
+  const { selectedBook, clearSelectedBook } = useSelectedBook()
 
   function handleRating() {
     if (session?.user) {
@@ -54,8 +51,8 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
   async function confirmNewRating({
     rate,
     description,
-  }: Pick<Comment, 'description' | 'rate'>) {
-    const { data } = await api.post(`/books/${book.id}/reviews`, {
+  }: Pick<IComment, 'description' | 'rate'>) {
+    const { data } = await api.post(`/books/${selectedBook?.id}/reviews`, {
       rate,
       description,
     })
@@ -66,10 +63,14 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
   }
 
   useEffect(() => {
-    api.get(`/books/${book.id}/reviews`).then((response) => {
-      setComments(response.data)
-    })
-  }, [book.id])
+    if (selectedBook?.id) {
+      api.get(`/books/${selectedBook?.id}/reviews`).then((response) => {
+        setComments(response.data)
+      })
+    }
+  }, [selectedBook?.id])
+
+  if (!selectedBook) return null
 
   return (
     <>
@@ -77,7 +78,7 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
         <div className="book-info w-full max-w-[660px] px-[34px] pt-4 pb-16 bg-gray-800 shadow-[-4px_0_30px_0_rgba(0,0,0,0.50)] overflow-y-auto">
           <button
             type="button"
-            onClick={onClose}
+            onClick={clearSelectedBook}
             className="ml-auto block cursor-pointer"
           >
             <X size={24} />
@@ -86,22 +87,24 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
           <div className="flex flex-col gap-10 px-8 pt-6 pb-4 mt-4 rounded-[10px] bg-gray-700">
             <div className="flex gap-8">
               <BookImage
-                src={book.coverUrl}
-                alt={book.name}
+                src={selectedBook.coverUrl}
+                alt={selectedBook.name}
                 className="w-full max-w-[172px]"
               />
 
               <div className="flex-1 flex flex-col justify-between">
                 <h2 className="text-gray-100 text-title-xs">
-                  {book.name} <br />
-                  <span className="text-gray-400 text-md">{book.author}</span>
+                  {selectedBook.name} <br />
+                  <span className="text-gray-400 text-md">
+                    {selectedBook.author}
+                  </span>
                 </h2>
 
                 <div>
-                  <RatingStars value={book.averageRating} />
+                  <RatingStars value={selectedBook.averageRating} />
 
                   <span className="text-gray-400 text-sm mt-1 block">
-                    {generateRatingCountText(book.ratingCount)}
+                    {generateRatingCountText(selectedBook.ratingCount)}
                   </span>
                 </div>
               </div>
@@ -114,7 +117,7 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
                   Categoria
                   <br />
                   <span className="block text-gray-200 text-title-xs font-bold lowercase first-letter:capitalize">
-                    {book.categories.join(', ')}
+                    {selectedBook.categories.join(', ')}
                   </span>
                 </span>
               </div>
@@ -125,7 +128,7 @@ export function BookInfoModal({ book, onClose }: BookInfoModal) {
                   Páginas
                   <br />
                   <span className="text-gray-200 text-title-xs font-bold">
-                    {book.totalPages}
+                    {selectedBook.totalPages}
                   </span>
                 </span>
               </div>
