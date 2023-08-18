@@ -1,5 +1,6 @@
 import { LoginButton } from './LoginButton'
 import { CloseButton } from './CloseButton'
+import { signIn } from 'next-auth/react'
 
 interface LoginModalProps {
   onClose: () => void
@@ -14,7 +15,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
           onClick={onClose}
           className="fill-gray-400 absolute top-4 right-4"
         >
-          <CloseButton />
+          <CloseButton onClick={onClose} />
         </button>
 
         <h3 className="text-gray-200 text-center text-title-xs">
@@ -22,8 +23,12 @@ export function LoginModal({ onClose }: LoginModalProps) {
         </h3>
 
         <div className="flex flex-col gap-4">
-          <LoginButton icon="google">Entrar com Google</LoginButton>
-          <LoginButton icon="github">Entrar com Github</LoginButton>
+          <LoginButton icon="google" onClick={() => signIn('google')}>
+            Entrar com Google
+          </LoginButton>
+          <LoginButton icon="github" onClick={() => signIn('github')}>
+            Entrar com Github
+          </LoginButton>
         </div>
       </div>
     </div>
